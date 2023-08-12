@@ -20,7 +20,7 @@ class RecipeResource extends Resource
 {
     protected static ?string $model = Recipe::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cake';
 
     public static function form(Form $form): Form
     {
@@ -42,6 +42,58 @@ class RecipeResource extends Resource
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255),
+
+                Forms\Components\RichEditor::make('body')
+                    ->required()
+                    ->disableToolbarButtons([
+                        'attachFiles'
+                    ])
+                    ->columnSpan(2),
+
+                Forms\Components\Fieldset::make('Recipe details')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('cook_time')
+                            ->placeholder('15')
+                            ->suffix('minutes'),
+
+                        Forms\Components\TextInput::make('servings')
+                            ->placeholder('2'),
+                    ]),
+
+                Forms\Components\Repeater::make('ingredients')
+                    ->addActionLabel('Add ingredient')
+                    ->schema([
+                        Forms\Components\TextInput::make('amount')
+                            ->numeric()
+                            ->required(),
+
+                        Forms\Components\TextInput::make('unit')
+                            ->placeholder('grams'),
+
+                        Forms\Components\TextInput::make('name')
+                            ->required(),
+                    ])
+                    ->columns(3)
+                    ->columnSpan(2),
+
+                Forms\Components\Repeater::make('steps')
+                    ->addActionLabel('Add step')
+                    ->schema([
+                        Forms\Components\TextInput::make('description')
+                            ->required(),
+                    ])
+                    ->columns(1)
+                    ->columnSpan(2),
+
+                Forms\Components\Repeater::make('notes')
+                    ->addActionLabel('Add note')
+                    ->schema([
+                        Forms\Components\TextInput::make('note')
+                            ->prefix('Tip:'),
+                    ])
+                    ->columns(1)
+                    ->columnSpan(2),
             ]);
     }
 

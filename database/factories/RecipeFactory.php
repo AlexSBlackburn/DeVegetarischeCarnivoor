@@ -19,14 +19,21 @@ class RecipeFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'user_id' => User::first()->id,
+            'user_id' => 1,
             'slug' => $this->faker->slug,
-            'body' => $this->faker->paragraphs(3, true),
+            'intro' => $this->faker->paragraph,
             'cook_time' => $this->faker->numberBetween(5, 60),
             'servings' => $this->faker->numberBetween(1, 10),
-            'ingredients' => $this->faker->word,
-            'steps' => $this->faker->sentence,
-            'notes' => $this->faker->sentence,
+            'ingredients' => [
+                [
+                    'amount' => $this->faker->numberBetween(1, 10),
+                    'unit' => $this->faker->randomElement(['cup', 'tsp', 'tbsp', 'grams', 'ml']),
+                    'name' => $this->faker->word,
+                ]
+            ],
+//            'steps' => [$this->faker->sentence],
+//            'notes' => [$this->faker->sentence],
+            'body' => $this->faker->paragraphs(3, true),
         ];
     }
 }

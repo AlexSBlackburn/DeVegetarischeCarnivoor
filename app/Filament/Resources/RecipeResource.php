@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\RecipeResource\Pages;
-use App\Filament\Resources\RecipeResource\RelationManagers;
 use App\Models\Recipe;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -31,19 +30,17 @@ class RecipeResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state): void {
-                        if ((string) $get('slug') !== Str::slug($old)) {
-                            return; // The user has manually changed the slug.
+                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state): void {
+                        if (empty($get('slug'))) {
+                            $set('slug', Str::slug($state));
                         }
-
-                        $set('slug', Str::slug($state));
                     }),
 
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\RichEditor::make('body')
+                Forms\Components\RichEditor::make('intro')
                     ->required()
                     ->disableToolbarButtons([
                         'attachFiles'
@@ -51,7 +48,6 @@ class RecipeResource extends Resource
                     ->columnSpan(2),
 
                 Forms\Components\Fieldset::make('Recipe details')
-                    ->columns(2)
                     ->schema([
                         Forms\Components\TextInput::make('cook_time')
                             ->placeholder('15')
@@ -80,7 +76,7 @@ class RecipeResource extends Resource
                 Forms\Components\Repeater::make('steps')
                     ->addActionLabel('Add step')
                     ->schema([
-                        Forms\Components\TextInput::make('description')
+                        Forms\Components\TextInput::make('step')
                             ->required(),
                     ])
                     ->columns(1)
@@ -89,11 +85,18 @@ class RecipeResource extends Resource
                 Forms\Components\Repeater::make('notes')
                     ->addActionLabel('Add note')
                     ->schema([
-                        Forms\Components\TextInput::make('note')
+                        Forms\Components\TextInput::make('tip')
                             ->prefix('Tip:'),
                     ])
                     ->columns(1)
                     ->columnSpan(2),
+
+                Forms\Components\RichEditor::make('body')
+                    ->required()
+                    ->columnSpan(2),
+
+                Forms\Components\Hidden::make('user_id')
+                    ->default(fn () => auth()->id()),
             ]);
     }
 
@@ -101,7 +104,13 @@ class RecipeResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->since()
+                    ->sortable(),
             ])
             ->filters([
                 //

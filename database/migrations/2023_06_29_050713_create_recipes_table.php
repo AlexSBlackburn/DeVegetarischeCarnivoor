@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->restrictOnDelete();
+            $table->foreignId('user_id');
             $table->string('title');
             $table->string('slug');
-            $table->longText('body');
+            $table->longText('intro');
             $table->string('cook_time');
             $table->string('servings');
-            $table->longText('ingredients');
-            $table->longText('steps');
-            $table->longText('notes')->nullable();
+            $table->json('ingredients');
+            $table->json('steps');
+            $table->json('notes')->nullable();
+            $table->longText('body');
             $table->timestamps();
         });
     }

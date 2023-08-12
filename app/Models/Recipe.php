@@ -13,6 +13,12 @@ class Recipe extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'ingredients' => 'array',
+        'steps' => 'array',
+        'notes' => 'array',
+    ];
+
     /**
      * Get the route key for the model.
      */

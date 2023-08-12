@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('servings');
             $table->longText('ingredients');
             $table->longText('steps');
-            $table->longText('notes');
+            $table->longText('notes')->nullable();
             $table->timestamps();
         });
     }
